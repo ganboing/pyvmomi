@@ -35,7 +35,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from pyVmomi import vim, vmodl, SoapStubAdapter, SessionOrientedStub
-from pyVmomi.SoapAdapter import CONNECTION_POOL_IDLE_TIMEOUT_SEC
+from pyVmomi.SoapAdapter import CONNECTION_POOL_IDLE_TIMEOUT_SEC, HTTP_CONNECTION_TIMEOUT_SEC
 from pyVmomi.VmomiSupport import nsMap, versionIdMap, versionMap, IsChildVersion
 from pyVmomi.VmomiSupport import GetServiceVersions
 
@@ -596,9 +596,9 @@ def __GetElementTree(protocol, server, port, path, sslContext):
 
    if protocol == "https":
       kwargs = {"context": sslContext} if sslContext else {}
-      conn = http_client.HTTPSConnection(server, port=port, **kwargs)
+      conn = http_client.HTTPSConnection(server, port=port, timeout=HTTP_CONNECTION_TIMEOUT_SEC, **kwargs)
    elif protocol == "http":
-      conn = http_client.HTTPConnection(server, port=port)
+      conn = http_client.HTTPConnection(server, port=port, timeout=HTTP_CONNECTION_TIMEOUT_SEC)
    else:
       raise Exception("Protocol " + protocol + " not supported.")
    conn.request("GET", path)
